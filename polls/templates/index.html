@@ -1,0 +1,19 @@
+<h1>Running the wrong form</h1>
+<a href="/create">Create data</a> | <a href="/person/new/">Create Person</a><br />
+
+<br />
+{% for user in persons %}
+{{user}}
+<br/>
+{% endfor %}
+<br/>
+{% for unit in units %}
+{{unit}}
+<br/>
+{% endfor %}
+<br/>
+{% for partner in partners %}
+{{partner}}
+<br/>
+{% endfor %}
+

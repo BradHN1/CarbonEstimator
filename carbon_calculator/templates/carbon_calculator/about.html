@@ -1,0 +1,23 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+<div  align="center">
+
+   <h1> <img src="{{EVENT_LOGO_URL}}" alt="Event logo" style="height:100px;padding-right:0">About the event</h1>
+   <p>Welcome to the <strong>{{EVENT_NAME}}</strong>! We are happy to have you here, and help you take action to lower your emissions and save money.
+</p>
+<p>  Any information you provide will only be used to help you achieve your energy savings goal and reduce your carbon footprint, and not be used for any commercial purpose.
+</p>  
+ <h2>About the host organization</h2>
+    <a href=http://ener-g-save.com><img src="{{HOST_LOGO_URL}}" alt="Host logo" style="height:50px;padding-right:0"></a>
+</br> Ener-G-Save is a non-profit organization dedicated to helping Pioneer Valley homeowners
+   cut energy loss and make their homes more comfortable and affordable  
+
+   <h2>About the sponsor</h2>
+   <a href=https://hgf.org><img src="{{SPONSOR_LOGO_URL}}" alt="Sponsor logo" style="height:50px;padding-right:0"></a>
+</br>   A charitable foundation supporting community programs in Massachusetts and elsewhere.
+          
+    <h3><a href="{% url 'carbon_calculator:eventcalculator' %}">Continue</a></h3>
+
+</div>

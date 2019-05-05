@@ -1,0 +1,15 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+<div  align="center">
+<h1><img src="/static/images/Full-CClogo-RGB-72dpi.jpg" alt="Cooler Concord logo" style="align:middle;width:150px;height:100px;padding-right:0">
+    Action Areas</h1>
+
+<h3>What would you like to do?</h3>
+
+<form action="stations" method="post">
+        {% csrf_token %}
+        {% crispy form form.helper %}
+</form>
+</div>    

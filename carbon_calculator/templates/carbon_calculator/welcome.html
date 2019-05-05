@@ -1,0 +1,11 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+<div  align="center">
+<h1>Welcome to Brad's Carbon Calculator Sandbox page!</h1>
+<h2>Please choose from the following options:{{settings.EVENT_LOGO}}</h2>
+<ul>
+    <li><a href="{% url 'carbon_calculator:about' %}"><strong>{{EVENT_NAME}}</strong></a>
+        <img src="{{EVENT_LOGO_URL}}" alt="Event logo" style="height:75px;padding-right:0"></li>
+</ul> 
+</div>
