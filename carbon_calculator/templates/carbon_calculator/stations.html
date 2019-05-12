@@ -30,18 +30,17 @@
     <h1><img src="{{EVENT_LOGO_URL}}" alt="Event logo" style="height:80px;padding-right:0">
         Action Areas</h1>
 
+  {% if stationList %}
     <h3>Choose from the following options</h3>
     
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION1}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION2}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION3}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION4}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION5}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION6}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION7}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION8}}</strong></h4>
-        <h4><a href="{% url 'carbon_calculator:stationdetail' %}"><strong>{{STATION9}}</strong></h4>
+    <ul>
+    {% for station in stationList %}
+    <li><a href="{% url 'carbon_calculator:stations' station.id %}">{{ station.name }}</a></li>
+    {% endfor %}
     </ul>
 
+{% else %}
+    <p>No stations are available.</p>
+{% endif %}
 </div>    
 </html>

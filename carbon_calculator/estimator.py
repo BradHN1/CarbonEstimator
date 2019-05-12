@@ -46,21 +46,65 @@ class Estimator():
 
         # Call the Sheets API
         self.sheet = service.spreadsheets()
+
         result = self.sheet.values().get(spreadsheetId=self.spreadsheetId,
                                 range='Carbon Points Estimator!B1').execute()
         values = result.get('values', [])
-        event_name = values[0][0]
-        print("Estimator Class - init")
+        self.eventName = values[0][0]
 
-        self.eventName = event_name
+        result = self.sheet.values().get(spreadsheetId=self.spreadsheetId,
+                                range='Carbon Points Estimator!F1').execute()
+        values = result.get('values', [])
+        self.eventDate = values[0][0]
+
+        result = self.sheet.values().get(spreadsheetId=self.spreadsheetId,
+                                range='Carbon Points Estimator!F2').execute()
+        values = result.get('values', [])
+        self.eventLocation = values[0][0]
+
+        result = self.sheet.values().get(spreadsheetId=self.spreadsheetId,
+                                range='Carbon Points Estimator!F6').execute()
+        values = result.get('values', [])
+        self.eventOrganizer = values[0][0]
+
+        result = self.sheet.values().get(spreadsheetId=self.spreadsheetId,
+                                range='Carbon Points Estimator!F8').execute()
+        values = result.get('values', [])
+        self.eventSponsor = values[0][0]
+
+        result = self.sheet.values().get(spreadsheetId=self.spreadsheetId,
+                                range='Carbon Points Estimator!A118:A126').execute()
+        values = result.get('values', [])
+        self.teamList = []
+        for i in range(len(values)):
+            self.teamList.append(values[i][0])
+
+        pprint(self.teamList)
+
         self.stationList = []
+
+
 
     def GetInstance(self):
         return self
 
     def GetEventName(self):
-        print(dir(self))
         return self.eventName
+    
+    def GetEventDate(self):
+        return self.eventDate
+    
+    def GetEventLocation(self):
+        return self.eventLocation
+    
+    def GetEventSponsor(self):
+        return self.eventSponsor
+    
+    def GetEventOrganizer(self):
+        return self.eventOrganizer
+
+    def GetTeams(self):
+        return self.teamList
     
     def GetStations(self):
         self.stationList = []
@@ -73,7 +117,6 @@ class Estimator():
         else:
             for row in values:
                 if len(row)>=3 and len(row[2])>1 and row[2][0]=='T':
-                    ID = row[2][1]
                     station = row[0]
                     self.stationList.append(station)
         return self.stationList
@@ -107,13 +150,15 @@ class Estimator():
         #            station = row[0]
         #            station_list.append(station)
         whichRow = 0
+        print("station "+str(station))
         for row in values:
+            #pprint(row)
             if len(row)>=3 and len(row[2])==1 and int(row[2])==station:
                 question = row[0]
                 responses = row[1]
                 current_questions.append(question)
                 #responses_list.append(values)
-                print(question )
+                #print(question )
                 cell_data = the_rowData[whichRow]["values"]
                 responseType = cell_data[1]["dataValidation"]["condition"]
                 current_responses.append(responseType)
@@ -123,13 +168,14 @@ class Estimator():
                 responses = row[4]
                 planned_questions.append(question)
                 #responses_list.append(values)
-                print(question )
+                #print(question )
                 cell_data = the_rowData[whichRow]["values"]
                 responseType = cell_data[4]["dataValidation"]["condition"]
                 planned_responses.append(responseType)
 
             whichRow += 1
 
+        #pprint(current_questions)
         response["Current-questions"] = current_questions
         response["Current-responses"] = current_responses
         response["Planned-questions"] = planned_questions

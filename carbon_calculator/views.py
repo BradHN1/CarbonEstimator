@@ -3,13 +3,19 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.conf import settings
+from django.db import models
+from django.views import generic
 from .estimator import Estimator
+import datetime
+import calendar
+
+from pprint import pprint
 
 #from django.views import generic
 import logging
 
 from .forms import NameForm, ContactForm, ExampleForm,StationDetailForm
-from .models import Station
+from .models import Event, Attendee, Organizer, Sponsor, Station, Question, Community
 
 event_name = 'Cooler Communities Event Calculator'
 stationList = []
@@ -18,12 +24,47 @@ estimator = Estimator()
 
 # Create your views here.
 def index(request):
-      
+    global event_name  
     event_name = estimator.GetEventName()
+   
+    # see if event is in database, if not, add it
+    event = Event.objects.filter(name=event_name)
+    if len(event)==0:
+
+        datestring = estimator.GetEventDate()
+        year = int(datestring[-4:])
+        month = list(calendar.month_abbr).index(datestring[0:3])
+        day = int(datestring[4:6])
+        date = datetime.datetime(year, month, day)
+
+
+        location= estimator.GetEventLocation()
+
+        # add organizer if missing
+        organizer_name = estimator.GetEventOrganizer()
+        organizer = Organizer.objects.filter(name=organizer_name)
+        if len(organizer)==0:
+            organizer= Organizer(name=organizer_name)
+            organizer.save()
+        else:
+            organizer = organizer.get(name=organizer_name)
+        # add sponsor if missing
+        sponsor_name = estimator.GetEventSponsor()
+        sponsor = Sponsor.objects.filter(name=sponsor_name)
+        if len(sponsor)==0:
+            sponsor= Sponsor(name=sponsor_name)
+            sponsor.save()
+        else:
+            sponsor = sponsor.get(name=sponsor_name)
+
+        event = Event(name=event_name, date=date, location=location,organizer=organizer,sponsor=sponsor)
+        event.save()
+    
     welcome_context = {'EVENT_NAME':event_name}
     return render(request, 'carbon_calculator/welcome.html', welcome_context)
  
 def about(request):
+    global event_name
     event_name = estimator.GetEventName()
     about_context = {'EVENT_NAME':event_name}
     return render(request, 'carbon_calculator/about.html',about_context)
@@ -44,6 +85,35 @@ def eventcalculator(request):
             phone = form.cleaned_data['phone']
             old_enough = form.cleaned_data['old_enough']
 
+            matchingCommunities = Community.objects.filter(name=community)
+            if len(matchingCommunities)==0:
+                community = Community(name = community)
+            else:
+                community = matchingCommunities.get()
+
+            if (old_enough[0]!='Y') and (old_enough[0]!='y'):
+                age_acknowledgement=False
+                firstName = "Underage"
+                lastName = "Person"
+                email = ""
+                address = ""
+                phone = ""
+            else:
+                age_acknowledgement=True
+                attendee = Attendee.objects.filter(email=email)
+
+            event = Event.objects.all()
+            event_name = estimator.GetEventName()
+            if len(event)>0:
+                event = event.get(name=event_name)
+
+            if lastName=="Person" or len(attendee)==0:
+                attendee = Attendee(firstName=firstName, lastName=lastName, email=email,address=address,community=community,
+                    phone=phone,age_acknowledgment=age_acknowledgement,event=event)
+                attendee.save() 
+
+
+
  #           nameUpdateRequest = {"responseRanges":['Carbon Points Estimator!G4'],
  #                               "includeSpreadsheetInResponse": True,
  #                               "responseIncludeGridData": False,
@@ -63,22 +133,50 @@ def eventcalculator(request):
 
     return render(request, 'carbon_calculator/eventcalculator.html', {'form': form})
 
+class StationsView(generic.ListView):
+    template_name = 'carbon_calculator/stations.html'
+    context_object_name = 'stationList'
+
+    def __init__(self):
+        stationList = estimator.GetStations()
+        print('StationsView init, number of stations is '+chr(len(stationList)))
+    
+    def get_queryset(self):
+        """
+        Return the last five published questions (not including those set to be
+        published in the future).
+        """
+        return Station.objects.filter()
+
+class StationDetailView(generic.ListView):
+    template_name = 'carbon_calculator/stations-detail.html'
+    context_object_name = 'questionList'
+
+    def get_queryset(self):
+        """
+        Return the last five published questions (not including those set to be
+        published in the future).
+        """
+        return Question.objects.filter(station=station)
+
+
 def stations(request):
     global next_station
-    global stationList
+#    global stationList
 
-    stations_context = {}
     next_station = 1
     stationList = estimator.GetStations()
     print("len(stationList) = "+str(len(stationList)))
+    
+    context = {'stationList':stationList}
 
-    stationID = 0
-    for station in stationList:
-        tag = "STATION"+str(stationID)
-        stations_context[tag]=station
-        stationID += 1
+    #stationID = 0
+    #for station in stationList:
+    #    tag = "STATION"+str(stationID)
+    ##    stations_context[tag]=station
+    #    stationID += 1
 
-    return render(request, 'carbon_calculator/stations.html',stations_context)
+    return render(request, 'carbon_calculator/stations.html',context)
 
 def stationdetail(request):
     global next_station
@@ -90,7 +188,7 @@ def stationdetail(request):
     #question_list = []
     responses_list = []
     station_context = {}
-    next_station = 0
+    next_station = 1
 
     stationQuestions = estimator.GetQuestionList(next_station)
     

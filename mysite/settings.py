@@ -32,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:test@localhost:7687')
+#NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:test@localhost:7687')
 
 
 # Application definition
@@ -94,19 +94,19 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL')
+#NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL')
 
-from neomodel import config
-config.DATABASE_URL = 'bolt://neo4j:neo4j@localhost:7687'  # default
+#from neomodel import config
+#config.DATABASE_URL = 'bolt://neo4j:neo4j@localhost:7687'  # default
 
 
-NEO4J_DATABASES = {
-    'default' : {
-        'HOST':'localhost',
-        'PORT':7474,
-        'ENDPOINT':'/db/data'
-    }
-}
+#NEO4J_DATABASES = {
+#    'default' : {
+#        'HOST':'localhost',
+#        'PORT':7474,
+#        'ENDPOINT':'/db/data'
+#    }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

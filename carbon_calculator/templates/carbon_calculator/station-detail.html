@@ -6,8 +6,6 @@
 <h2><img src="{{EVENT_LOGO_URL}}" alt="Event logo" style="align:middle;height:80px;padding-right:0">
     {{STATION_TITLE}}</h2>
 
-<h3>Current Situation</h3>
-
     <form action="stationdetail" method="post">
             {% csrf_token %}
             {% crispy form form.helper %}

@@ -6,3 +6,7 @@ credentials\.json
 config\.json
 
 token\.pickle
+
+carbon_calculator/junk/
+
+carbon_calculator/models-old\.py
