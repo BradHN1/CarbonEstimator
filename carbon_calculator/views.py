@@ -134,19 +134,29 @@ def eventcalculator(request):
     return render(request, 'carbon_calculator/eventcalculator.html', {'form': form})
 
 class StationsView(generic.ListView):
+    model = Station
     template_name = 'carbon_calculator/stations.html'
-    context_object_name = 'stationList'
+    context_object_name = 'station_list'
 
     def __init__(self):
-        stationList = estimator.GetStations()
-        print('StationsView init, number of stations is '+chr(len(stationList)))
-    
+        station_list = estimator.GetStations()
+        print('StationsView init, number of stations is '+str(len(station_list)))
+
+        event = Event.objects.get(name=estimator.GetEventName())
+
+        for i in range(len(stationList)):
+            station = Station.objects.filter(name=stationList[i]).filter(event=event)
+            if (len(station))==0:
+                station=Station(name=station_list[i],number=i+1,event=event)
+                station.save()
+
     def get_queryset(self):
         """
         Return the last five published questions (not including those set to be
         published in the future).
         """
-        return Station.objects.filter()
+        event = Event.objects.get(name=estimator.GetEventName())
+        return Station.objects.filter(event=event)
 
 class StationDetailView(generic.ListView):
     template_name = 'carbon_calculator/stations-detail.html'
@@ -162,12 +172,20 @@ class StationDetailView(generic.ListView):
 
 def stations(request):
     global next_station
+    event_name = estimator.GetEventName()
+    event = Event.objects.get(name=event_name)
 #    global stationList
 
     next_station = 1
     stationList = estimator.GetStations()
     print("len(stationList) = "+str(len(stationList)))
-    
+
+    for i in range(len(stationList)):
+        station = Station.objects.filter(name=stationList[i]).filter(event=event)
+        if (len(station))==0:
+            station=Station(name=stationList[i],number=i+1,event=event)
+            station.save()
+
     context = {'stationList':stationList}
 
     #stationID = 0

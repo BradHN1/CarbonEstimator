@@ -6,11 +6,6 @@
 <h2><img src="{{EVENT_LOGO_URL}}" alt="Event logo" style="align:middle;height:80px;padding-right:0">
     {{STATION_TITLE}}</h2>
 
-    <form action="stationdetail" method="post">
-            {% csrf_token %}
-            {% crispy form form.helper %}
-    </form>
-
     
-            <h3><a href="{% url 'carbon_calculator:stationdetail' %}">Continue</a></h3>        
+            <h3><a href="{% url 'carbon_calculator:station'  %}">Continue</a></h3>        
 </div>    
