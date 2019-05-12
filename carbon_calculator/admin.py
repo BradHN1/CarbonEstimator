@@ -3,10 +3,6 @@ from django.contrib import admin
 # Register your models here.
 from .models import Organization, Sponsor, Organizer, Community, Event, Person, Attendee, Station, Question
 
-#class ChoiceInline(admin.TabularInline):
-#    model = Choice
-#    extra = 3
-
 class EventAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['name']}),
@@ -41,8 +37,6 @@ class PersonAdmin(admin.ModelAdmin):
         ('E-mail',               {'fields': ['email']}),       
         ('Phone',               {'fields': ['phone']}),       
         ('Address',         {'fields': ['address']}),
-        ('Community',        {'fields': ['community']}),
-        ('Sponsor',          {'fields': ['sponsor']}),
         ('Created', {'fields': ['created'], 'classes': ['collapse']}),
         ('Updated', {'fields': ['updated'], 'classes': ['collapse']}),
     
@@ -52,18 +46,35 @@ class PersonAdmin(admin.ModelAdmin):
     list_filter = ['community',]
     search_fields = ['name']
 
-#class QuestionAdmin(admin.ModelAdmin):
-#    fieldsets = [
-##        (None,               {'fields': ['question_text']}),
-#        ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
-#    ]
-#    inlines = [ChoiceInline]
-#    list_display = ('question_text', 'pub_date', 'was_published_recently')
-#    list_filter = ['pub_date']
-#   search_fields = ['question_text']
+class StationAdmin(admin.ModelAdmin):
+    fieldsets = [
+        ('Name',            {'fields': ['name']}),
+        ('Number',          {'fields': ['number']}),
+        ('Event',           {'fields': ['event']}),
+        ('Description',     {'fields': ['description']}),   
+    ]
+    inlines = []
+    list_display = ('name', 'event',)
+    list_filter = ['event']
+    search_fields = ['name']
+
+class QuestionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['question_text']}),
+        ('Station',           {'fields': ['station']}),
+        ('Question ID',          {'fields': ['questionId']}),
+        ('Response Type',          {'fields': ['response_type']}),
+        ('Choices',          {'fields': ['choices']}),
+    ]
+    inlines = []
+    list_display = ('question_text', 'station', 'response_type')
+    list_filter = ['questionId']
+    search_fields = ['question_text']
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(Organizer, OrganizationAdmin)
 admin.site.register(Sponsor, OrganizationAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Attendee, PersonAdmin)
+admin.site.register(Station, StationAdmin)
+admin.site.register(Question, QuestionAdmin)

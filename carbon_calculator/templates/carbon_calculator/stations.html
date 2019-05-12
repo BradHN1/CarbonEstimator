@@ -30,13 +30,12 @@
         Action Areas</h1>
 
   {% if station_list %}
-    <h3>Choose from the following options</h3>
-    
-    <ul>
+    <h3>Choose from the following options</h3>   
+    <ol>
     {% for station in station_list %}
-    <li><a href="{% url 'carbon_calculator:stations' station.number %}">{{ station.name }}</a></li>
-    {% endfor %}
-    </ul>
+    <li><h4><a href="{{ station.number }}">{{ station.name }}</a></h4></li>
+     {% endfor %}
+    </ol>
 
 {% else %}
     <p>No stations are available.</p>
